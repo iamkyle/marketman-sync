@@ -1,6 +1,5 @@
 $:.unshift(File.dirname(__FILE__))
 require "dotenv"
-require "shopify_api"
 require "marketman-sync/version"
 require "marketman-sync/connection"
 require "marketman-sync/resources"

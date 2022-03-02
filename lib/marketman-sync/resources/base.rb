@@ -1,31 +1,39 @@
 module MarketmanSync
-  class Base < ActiveResource::Base
-    
+  class Base
+    PATH = Rails.env.production? ? "https://api.marketman.com/v3/buyers" : "https://api.marketman.com/v3/buyers"
+
     class InvalidSessionError < StandardError; end
 
     def initialize(installation, session = nil)
-      @CYCLE = 1
-
       @installation = installation
-  
-      unless @session && @session.domain == @installation.domain
-        start_session if @installation
-      end
+      start_session
     end
     
-    class << self
-      
-    end
+    def request(action, data = false)
+      url = URI("#{PATH}/#{action}")
+  
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+  
+      request = Net::HTTP::Post.new(url)
 
-    def persisted?
-      !id.nil?
+      request['content-type'] = 'application/json'
+      request['AUTH_TOKEN'] = "#{@session[:token]}"
+      request.body = data.to_json if data
+  
+      response = http.request(request)
+  
+      res = JSON.parse response.read_body
     end
-
     private
 
     def start_session
-     
+      @session = {
+        domain: @installation.domain,
+        apiKey: @installation.public_key,
+        apiPassword: @installation.refresh_token,
+        token: @installation.token
+      }
     end
-
   end
 end
