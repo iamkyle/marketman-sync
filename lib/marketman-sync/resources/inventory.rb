@@ -8,23 +8,32 @@ module MarketmanSync
         session = new(installation) if installation
         response = session.request("inventory/GetItems",params)
       end
+      def getPreps(installation = nil, params = {})
+        params.deep_transform_keys! { |key| key.camelize() }
+        session = new(installation) if installation
+        response = session.request("inventory/GetPreps",params)
+      end
 
       def getInventoryItems(installation = nil, params = {})
         params.deep_transform_keys! { |key| key.camelize() }
         session = new(installation) if installation
-        response = session.request("inventory/GetInventoryItems",params)
+        newParams = {}
+        newParams["BuyerGuid"] = params["BuyerGuid"]
+        newParams["buffer"] = "buffer"
+        puts newParams
+        response = session.request("inventory/GetInventoryItems",newParams)
       end
 
       def getInventoryCounts(installation = nil, params = {})
-      params.deep_transform_keys! { |key| key.camelize() }
+        params.deep_transform_keys! { |key| key.camelize() }
         session = new(installation) if installation
         response = session.request("inventory/GetInventoryCounts",params)
       end
 
-      def setInventoryItemParLevel(installation = nil, params = {})
+      def setInventoryItemParLevels(installation = nil, params = {})
         params.deep_transform_keys! { |key| key.camelize() }
         session = new(installation) if installation
-        response = session.request("inventory/SetInventoryItemParLevel",params)
+        response = session.request("sales/SetInventoryItemParLevel",params)
       end
       
 

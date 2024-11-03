@@ -20,6 +20,9 @@ module MarketmanSync
       request['content-type'] = 'application/json'
       request['AUTH_TOKEN'] = "#{@session[:token]}"
       request.body = data.to_json if data
+
+      puts "REQUEST"
+      puts request.to_yaml
   
       response = http.request(request)
   
